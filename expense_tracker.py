@@ -4,7 +4,7 @@ base_url = "http://127.0.0.1:3000/expenses"
 
 def view_expenses():
     expenses_json = requests.get(base_url)
-    print(expenses_json)
+
     if expenses_json.status_code == 200:
         expenses = expenses_json.json()['expenses']
         print(expenses)
@@ -19,5 +19,14 @@ def view_expenses():
     else:
         print("Error retrieving expenses: ", expenses_json.status_code)
 
+def add_expense(new_expense):
+    send_expense = requests.post(base_url, json = new_expense)
+
+    if send_expense.status_code == 201:
+        print("Expense has been added!")
+        return send_expense.json()
+    else:
+        print("Error adding expense: ", send_expense.status_code)
+
 if __name__ == '__main__':
-    view_expenses()
+    add_expense({'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"})

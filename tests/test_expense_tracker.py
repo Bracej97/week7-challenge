@@ -56,3 +56,11 @@ class TestExpenseTracker(unittest.TestCase):
     @patch('requests.post')
     def test_add_expense(self, mock_post):
         mock_post.return_value.status_code = 201
+        mock_post.return_value.json.return_value = [{'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"}]
+
+        data = add_expense({'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"})
+
+        assert data[0]['description'] == 'lunch'
+        assert data[0]['amount'] == 10.5
+        assert data[0]['date'] == "28-08-1997"
+        mock_post.assert_called_once()
