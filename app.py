@@ -3,7 +3,9 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 # In-memory storage for expenses
-expenses = []
+expenses = [{'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"},
+            {'description': 'dinner', 'amount': 30.75, 'date': "07-11-2024"},
+            {'description': 'breakfast', 'amount': 5, 'date': "04-11-2024"}]
 
 @app.route('/expenses', methods=['GET'])
 def get_expenses():
@@ -35,4 +37,4 @@ def delete_expense(expense_id):
     return '', 204
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='127.0.0.1', port=3000, debug=True)
