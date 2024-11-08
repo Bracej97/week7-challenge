@@ -11,13 +11,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from expense_tracker import *
 
-sample_simple_expense = {'expenses': [{'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"}]}
+sample_simple_expense = [{'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"}]
 json_sample_simple_expense = json.dumps(sample_simple_expense)
-sample_multiple_expense = {'expenses': [
+sample_multiple_expense = [
     {'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"},
     {'description': 'dinner', 'amount': 30.75, 'date': "07-11-2024"},
     {'description': 'breakfast', 'amount': 5, 'date': "04-11-2024"}
-]}
+]
 json_sample_multiple_expense = json.dumps(sample_multiple_expense)
 
 
@@ -26,7 +26,7 @@ class TestExpenseTracker(unittest.TestCase):
     @patch('requests.get')
     def test_view_expenses(self, mock_get):
         mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = sample_simple_expense
+        mock_get.return_value.json.return_value = {'expenses': sample_simple_expense}
 
         data = view_expenses()
         print(json_sample_simple_expense)
@@ -38,7 +38,7 @@ class TestExpenseTracker(unittest.TestCase):
     @patch('requests.get')
     def test_view_expenses_multiple(self, mock_get):
         mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = sample_multiple_expense
+        mock_get.return_value.json.return_value = {'expenses': sample_multiple_expense}
 
         data = view_expenses()
 
@@ -56,11 +56,35 @@ class TestExpenseTracker(unittest.TestCase):
     @patch('requests.post')
     def test_add_expense(self, mock_post):
         mock_post.return_value.status_code = 201
-        mock_post.return_value.json.return_value = [{'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"}]
+        mock_post.return_value.json.return_value = sample_simple_expense
 
-        data = add_expense({'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"})
+        data = add_expense(sample_simple_expense)
 
         assert data[0]['description'] == 'lunch'
         assert data[0]['amount'] == 10.5
         assert data[0]['date'] == "28-08-1997"
         mock_post.assert_called_once()
+
+    @patch('requests.put')
+    def test_update_expense(self, mock_put):
+        expense_id = 1
+        mock_put.return_value.status_code = 200
+        mock_put.return_value.json.return_value = sample_simple_expense
+
+        data = update_expense(expense_id, sample_simple_expense)
+
+        assert data[0]['description'] == 'lunch'
+        assert data[0]['amount'] == 10.5
+        assert data[0]['date'] == "28-08-1997"
+        mock_put.assert_called_once()
+
+    @patch('requests.put')
+    def test_update_expense_not_found(self, mock_put):
+        expense_id = 1
+        mock_put.return_value.status_code = 404
+        mock_put.return_value.json.return_value = {'error': 'Expense not found'}
+
+        data = update_expense(expense_id, sample_simple_expense)
+
+        self.assertEqual(data, 'Expense not found')
+        mock_put.assert_called_once()

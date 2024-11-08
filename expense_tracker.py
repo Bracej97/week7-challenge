@@ -28,5 +28,18 @@ def add_expense(new_expense):
     else:
         print("Error adding expense: ", send_expense.status_code)
 
+def update_expense(expense_id, updated_data):
+    send_updated_expense = requests.put(f'{base_url}/{expense_id}', json = updated_data)
+
+    if send_updated_expense.status_code == 200:
+        print("Expense has been updated!")
+        return send_updated_expense.json()
+    elif send_updated_expense.status_code == 404:
+        error = send_updated_expense.json()['error']
+        print(error)
+        return error
+    else:
+        print("Error updating expense: ", send_updated_expense.status_code)
+
 if __name__ == '__main__':
-    add_expense({'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"})
+    update_expense(1, {'description': 'lunch', 'amount': 12.5, 'date': "28-08-1997"})
