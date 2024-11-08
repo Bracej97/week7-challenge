@@ -1,6 +1,6 @@
+# Import all the required functionality
 import unittest
-from unittest.mock import patch, Mock
-import requests
+from unittest.mock import patch
 import sys
 import os
 import json
@@ -11,25 +11,26 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from expense_tracker import *
 
+# Create sample expense data to use in testing
 sample_simple_expense = [{'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997", 'id': 1}]
-json_sample_simple_expense = json.dumps(sample_simple_expense)
+
 sample_multiple_expense = [
     {'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997", 'id': 1},
     {'description': 'dinner', 'amount': 30.75, 'date': "07-11-2024", 'id': 2},
     {'description': 'breakfast', 'amount': 5, 'date': "04-11-2024", 'id': 3}
 ]
-json_sample_multiple_expense = json.dumps(sample_multiple_expense)
 
 
+# Test class for expense tracker
 class TestExpenseTracker(unittest.TestCase):
-
+    # Testing the view expense function with mocked API response for GET for single and multiple expenses
     @patch('requests.get')
     def test_view_expenses(self, mock_get):
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = {'expenses': sample_simple_expense}
 
         data = view_expenses()
-        print(json_sample_simple_expense)
+
         assert data[0]['description'] == 'lunch'
         assert data[0]['amount'] == 10.5
         assert data[0]['date'] == "28-08-1997"
@@ -53,6 +54,7 @@ class TestExpenseTracker(unittest.TestCase):
         assert data[2]['date'] == "04-11-2024"
         mock_get.assert_called_once()
 
+    # Testing the add expense function with a mocked API response for the POST request
     @patch('requests.post')
     def test_add_expense(self, mock_post):
         mock_post.return_value.status_code = 201
@@ -65,6 +67,7 @@ class TestExpenseTracker(unittest.TestCase):
         assert data[0]['date'] == "28-08-1997"
         mock_post.assert_called_once()
 
+    # Testing the update expense function with a mocked API response for the PUT request
     @patch('requests.put')
     def test_update_expense(self, mock_put):
         expense_id = 1
@@ -78,6 +81,7 @@ class TestExpenseTracker(unittest.TestCase):
         assert data[0]['date'] == "28-08-1997"
         mock_put.assert_called_once()
 
+    # Testing the update expense function failing with a mocked API response for the PUT request
     @patch('requests.put')
     def test_update_expense_not_found(self, mock_put):
         expense_id = 1
@@ -89,6 +93,7 @@ class TestExpenseTracker(unittest.TestCase):
         self.assertEqual(data, 'Expense not found')
         mock_put.assert_called_once()
 
+    # Testing the delete expense function with a mocked API response for the DELETE request
     @patch('requests.delete')
     def test_delete_expense(self, mock_delete):
         expense_id = 1
