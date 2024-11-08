@@ -11,12 +11,12 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from expense_tracker import *
 
-sample_simple_expense = [{'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"}]
+sample_simple_expense = [{'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997", 'id': 1}]
 json_sample_simple_expense = json.dumps(sample_simple_expense)
 sample_multiple_expense = [
-    {'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997"},
-    {'description': 'dinner', 'amount': 30.75, 'date': "07-11-2024"},
-    {'description': 'breakfast', 'amount': 5, 'date': "04-11-2024"}
+    {'description': 'lunch', 'amount': 10.5, 'date': "28-08-1997", 'id': 1},
+    {'description': 'dinner', 'amount': 30.75, 'date': "07-11-2024", 'id': 2},
+    {'description': 'breakfast', 'amount': 5, 'date': "04-11-2024", 'id': 3}
 ]
 json_sample_multiple_expense = json.dumps(sample_multiple_expense)
 
