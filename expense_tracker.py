@@ -41,5 +41,17 @@ def update_expense(expense_id, updated_data):
     else:
         print("Error updating expense: ", send_updated_expense.status_code)
 
+def delete_expense(expense_id):
+    deleted_expense = requests.delete(f'{base_url}/{expense_id}')
+
+    if deleted_expense.status_code == 204:
+        print("Expense has been deleted")
+        return 204
+    else:
+        print("Failed to delete expense")
+
+
+
+
 if __name__ == '__main__':
-    update_expense(1, {'description': 'lunch', 'amount': 12.5, 'date': "28-08-1997"})
+    delete_expense(5)

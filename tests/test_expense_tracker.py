@@ -88,3 +88,13 @@ class TestExpenseTracker(unittest.TestCase):
 
         self.assertEqual(data, 'Expense not found')
         mock_put.assert_called_once()
+
+    @patch('requests.delete')
+    def test_delete_expense(self, mock_delete):
+        expense_id = 1
+        mock_delete.return_value.status_code = 204
+
+        data = delete_expense(expense_id)
+
+        self.assertEqual(data, 204)
+        mock_delete.assert_called_once()
